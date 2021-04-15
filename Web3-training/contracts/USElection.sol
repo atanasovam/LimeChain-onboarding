@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.7.0;
-pragma abicoder v2;
+pragma experimental ABIEncoderV2;
 
-import "./Ownable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract USElection {
+contract USElection is Ownable {
     uint8 public constant BIDEN = 1;
     uint8 public constant TRUMP = 2;
 
@@ -23,11 +23,7 @@ contract USElection {
     event LogElectionEnded(uint256 winner);
     event LogStateResult(uint8 winner, uint8 stateSeats, string state);
 
-    function submitStateResult(StateResult calldata result)
-        public
-        onlyOwner
-        onlyActiveElection
-    {
+    function submitStateResult(StateResult calldata result) public onlyOwner onlyActiveElection {
         require(result.stateSeats > 0, "States must have at least 1 seat");
         require(
             result.votesBiden != result.votesTrump,
