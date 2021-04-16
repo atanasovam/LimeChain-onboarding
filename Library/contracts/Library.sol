@@ -3,6 +3,7 @@ pragma solidity 0.6.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+
 contract Library is Ownable {
     struct Book {
         string name;
@@ -31,9 +32,8 @@ contract Library is Ownable {
         _;
     }
     
-    modifier isAvailable(string memory _name) {
-        bytes32 id = callKeccak256(_name);
-        require(books[id].availableCopiesCount > 0, "This book isn't available!");
+    modifier isAvailable(bytes32 _id) {
+        require(books[_id].availableCopiesCount > 0, "This book isn't available!");
         _;
     }
 
@@ -49,33 +49,28 @@ contract Library is Ownable {
         emit LogAddedBook(id);
     }
     
-    function seeAllClientsByBookId(string memory _name) public view returns(address[] memory) {
-        bytes32 id = callKeccak256(_name);
-        return books[id].clientAddresses;
+    function seeAllClientsByBookId(bytes32 _id) public view returns(address[] memory) {
+        return books[_id].clientAddresses;
     }
 
-    function borrowBook(string memory _name) public isAvailable(_name) {
-        bytes32 id = callKeccak256(_name);
-        
-        require(!borrowedBooks[msg.sender][id], "Already borrowed!");
+    function borrowBook(bytes32 _id) public isAvailable(_id) {
+        require(!borrowedBooks[msg.sender][_id], "Already borrowed!");
 
-        books[id].availableCopiesCount--;
+        books[_id].availableCopiesCount--;
         
-        borrowedBooks[msg.sender][id] = true;
-        books[id].clientAddresses.push(msg.sender);
+        borrowedBooks[msg.sender][_id] = true;
+        books[_id].clientAddresses.push(msg.sender);
         
-        emit BookBorrowed(id);
+        emit BookBorrowed(_id);
     }
 
-    function returnBook(string memory _name) public {
-        bytes32 id = callKeccak256(_name);
+    function returnBook(bytes32 _id) public {
+        require(borrowedBooks[msg.sender][_id], "Not borrowed!");
         
-        require(borrowedBooks[msg.sender][id], "Not borrowed!");
+        borrowedBooks[msg.sender][_id] = false;
+        books[_id].availableCopiesCount++;
         
-        borrowedBooks[msg.sender][id] = false;
-        books[id].availableCopiesCount++;
-        
-        emit BookReturned(id);
+        emit BookReturned(_id);
     }
     
     function viewAllBooksCount() public view returns(uint) {
