@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "eg": "etherlime ganache",
-    "compile": "etherlime compile --solc-version=0.6.0 --runs=200",
+    "compile": "etherlime compile --solc-version=0.7.5 --runs=200",
     "deploy": "etherlime deploy --file=./deployment/deploy-remote.js --network=ropsten --secret=6bcef534ceb142659b6af673be541f05c64443c2cb9de1bcb72aa02db726b10d ",
     "deploy-local": "etherlime deploy",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -16,6 +16,6 @@
     "@openzeppelin/contracts": "^3.4.1",
     "etherlime-lib": "^1.2.5",
     "ethers": "^5.1.0",
-    "solc": "^0.6.0"
+    "solc": "^0.7.5"
   }
 }
