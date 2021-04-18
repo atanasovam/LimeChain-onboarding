@@ -1,7 +1,5 @@
-const createBook = async (contract) => {
-	const testBook = [3, "first book"];
-
-	const createBookTransactionReceipt = await contract.createBook(...testBook);
+const createBook = async (contract, bookParams) => {
+	const createBookTransactionReceipt = await contract.createBook(...bookParams);
 	const res = await createBookTransactionReceipt.wait();
 
 	if (res.status != 1) {
@@ -12,10 +10,10 @@ const createBook = async (contract) => {
 	console.log("Transaction successful!");
 };
 
-const borrowBook = async (contract, availableBooks) => {
+const borrowBook = async (contract, availableBooks, bookId) => {
 	if (availableBooks.length > 0) {
-		console.log(`Borrow: ${availableBooks[0].id}`);
-		await contract.borrowBook(availableBooks[0].id);
+		console.log(`Borrow: ${bookId}`);
+		await contract.borrowBook(bookId);
 	}
 };
 
@@ -59,7 +57,7 @@ const isBookAvailable = async (contract, bookId) => {
 };
 
 const isBookBorrowedByUser = async (contract, wallet, bookId) => { 
-	const bookClients = await contract.borrowedBooks(wallet.address);
+	const bookClients = await contract.borrowedBooks(wallet.address, bookId);
 	console.log(bookClients);
 };
 
