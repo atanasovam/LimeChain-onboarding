@@ -1,4 +1,4 @@
-const interact = (() => {
+const libraryContract = (() => {
 	const createBook = async (contract, bookParams) => {
 		const createBookTransactionReceipt = await contract.createBook(...bookParams);
 		const response = await createBookTransactionReceipt.wait();
@@ -79,4 +79,4 @@ const interact = (() => {
 	};
 })();
 
-module.exports = interact;
+module.exports = libraryContract;
