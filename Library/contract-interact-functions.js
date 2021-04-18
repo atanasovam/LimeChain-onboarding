@@ -1,73 +1,82 @@
-const createBook = async (contract, bookParams) => {
-	const createBookTransactionReceipt = await contract.createBook(...bookParams);
-	const res = await createBookTransactionReceipt.wait();
+const interact = (() => {
+	const createBook = async (contract, bookParams) => {
+		const createBookTransactionReceipt = await contract.createBook(...bookParams);
+		const response = await createBookTransactionReceipt.wait();
 
-	if (res.status != 1) {
-		console.log("Transaction was not successful!");
-		return;
-	}
+		if (response.status != 1) {
+			console.log("Transaction was not successful!");
+			return;
+		}
 
-	console.log("Transaction successful!");
-};
+		console.log("Transaction successful!");
+	};
 
-const borrowBook = async (contract, availableBooks, bookId) => {
-	if (availableBooks.length > 0) {
-		console.log(`Borrow: ${bookId}`);
-		await contract.borrowBook(bookId);
-	}
-};
+	const borrowBook = async (contract, availableBooks, bookId) => {
+		console.log(`Borrowing book with id: ${bookId}...`);
+		if (availableBooks.length === 0) {
+			console.log(`Cannot borrow book with id: ${bookId}- no available copies!`);
+			return;
+		}
 
-const returnBook = async (contract, bookId) => await contract.returnBook(bookId);
+		try {
+			const borrowBookTransactionReceipt = await contract.borrowBook(bookId);
+			await borrowBookTransactionReceipt.wait();
+			console.log("Transaction was successful!\n");
+		} catch (response) {
+			if (response.status != 1) {
+				console.log("Transaction was not successful!\n");
+			}
+		}
+	};
 
-const getBooksCount = async (contract) => {
-	const booksCount = await contract.viewAllBooksCount();
-	console.log(`Books count ${booksCount}`);
-	return booksCount;
-};
+	const returnBook = async (contract, bookId) => await contract.returnBook(bookId);
 
-const getAvailableBooks = (allBooks) => allBooks.filter(book => book.availableCopiesCount > 0);
+	const getBooksCount = async (contract) => {
+		const booksCount = await contract.viewAllBooksCount();
+		console.log(`Books count: ${booksCount}`);
+		return booksCount;
+	};
 
-const getAllBooks = async (contract, booksCount) => {
-	const allBooks = [];
-	let id;
+	const getAvailableBooks = (allBooks) => allBooks.filter(book => book.availableCopiesCount > 0);
 
-	for (let i = 0; i < booksCount; i++) {
-		id = await contract.allBookIDs(i);
-		let { name, availableCopiesCount } = await contract.books(id);
+	const getAllBooks = async (contract, booksCount) => {
+		const allBooks = [];
+		let book, id;
 
-		console.log(`Book id: ${id}`);
-		console.log(`Book name: ${name}`);
-		console.log(`Book copies: ${availableCopiesCount}`);
+		for (let i = 0; i < booksCount; i++) {
+			id = await contract.allBookIDs(i);
+			let { name, availableCopiesCount } = await contract.books(id);
 
-		allBooks.push({
-			id,
-			name,
-			availableCopiesCount
-		});
-	}
+			book = {
+				id,
+				name,
+				availableCopiesCount: parseInt(availableCopiesCount)
+			};
+			
+			console.table([book]);
+			allBooks.push(book);
+		}
 
-	return allBooks;
-};
+		return allBooks;
+	};
 
-const isBookAvailable = async (contract, bookId) => {
-	const { availableCopiesCount } = await contract.books(bookId);
-	console.log(parseInt(availableCopiesCount));
+	const isBookAvailable = async (contract, bookId) => {
+		const { availableCopiesCount } = await contract.books(bookId);
+		return parseInt(availableCopiesCount) > 0;
+	};
 
-	return parseInt(availableCopiesCount) > 0;
-};
+	const isBookBorrowedByUser = async (contract, wallet, bookId) => await contract.borrowedBooks(wallet.address, bookId);
 
-const isBookBorrowedByUser = async (contract, wallet, bookId) => { 
-	const bookClients = await contract.borrowedBooks(wallet.address, bookId);
-	console.log(bookClients);
-};
+	return {
+		createBook,
+		borrowBook,
+		returnBook,
+		getBooksCount,
+		getAllBooks,
+		getAvailableBooks,
+		isBookAvailable,
+		isBookBorrowedByUser
+	};
+})();
 
-module.exports = {
-	createBook,
-	borrowBook,
-	returnBook,
-	getBooksCount,
-	getAllBooks,
-	getAvailableBooks,
-	isBookAvailable,
-	isBookBorrowedByUser
-};
+module.exports = interact;
