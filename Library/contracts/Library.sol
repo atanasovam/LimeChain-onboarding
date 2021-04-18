@@ -13,7 +13,7 @@ contract Library is Ownable {
     bytes32[] public allBookIDs;
     
     mapping (bytes32 => Book) public books;
-    mapping (address => mapping (bytes32 => bool)) borrowedBooks;
+    mapping (address => mapping (bytes32 => bool)) public borrowedBooks;
     
     event LogAddedBook(bytes32 id);
     event BookBorrowed(bytes32 id);
