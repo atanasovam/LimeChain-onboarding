@@ -5,7 +5,7 @@ const { run } = require('../interact.js');
 const deploy = async (network, secret, etherscanApiKey) => {
     const deployer = new etherlime.EtherlimeGanacheDeployer();
     const { contract } = await deployer.deploy(Library);
-    const wallet = deployer.signer.signingKey;
+    const wallet = deployer.signer;
 
     run(contract, wallet);
 };

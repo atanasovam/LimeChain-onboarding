@@ -16,14 +16,8 @@ contract Library is Ownable {
     mapping (address => mapping (bytes32 => bool)) public borrowedBooks;
     
     event LogAddedBook(bytes32 id);
-    event BookBorrowed(bytes32 id);
-    event BookReturned(bytes32 id);
-    
-    modifier validateInputData(string memory _name, uint _count) {
-        require(_count > 0, "Count shouldn't be 0!");
-        require(bytes(_name).length > 0, "Name shouldn't be an empty string!");
-        _;
-    }
+    event BookBorrowed(bytes32 id, address client);
+    event BookReturned(bytes32 id, address client);
 
     modifier bookExists(string memory _name) {
         bytes32 id = callKeccak256(_name);
@@ -36,7 +30,10 @@ contract Library is Ownable {
         _;
     }
 
-    function createBook(uint _availableCopies, string memory _name) public onlyOwner validateInputData(_name, _availableCopies) bookExists(_name) {
+    function createBook(uint _availableCopies, string memory _name) public onlyOwner bookExists(_name) {
+        require(_availableCopies > 0, "Count shouldn't be 0!");
+        require(bytes(_name).length > 0, "Name shouldn't be an empty string!");
+        
         address[] memory addresses;
         Book memory book = Book(_name, _availableCopies, addresses);
 
@@ -60,7 +57,7 @@ contract Library is Ownable {
         borrowedBooks[msg.sender][_id] = true;
         books[_id].clientAddresses.push(msg.sender);
         
-        emit BookBorrowed(_id);
+        emit BookBorrowed(_id, msg.sender);
     }
 
     function returnBook(bytes32 _id) public {
@@ -69,7 +66,7 @@ contract Library is Ownable {
         borrowedBooks[msg.sender][_id] = false;
         books[_id].availableCopiesCount++;
         
-        emit BookReturned(_id);
+        emit BookReturned(_id, msg.sender);
     }
     
     function viewAllBooksCount() public view returns(uint) {
