@@ -1,21 +1,29 @@
 const { ethers } = require("ethers");
-const { LIBRARY_DEPLOYMENT_ROPSTEN, PRIVATE_KEY } = require("./constants/address");
+
+const { 
+	LIBRARY_DEPLOYMENT_ROPSTEN,
+	LIBRARY_DEPLOYMENT_LOCAL,
+    PRIVATE_KEY__ROPSTEN,
+    PRIVATE_KEY_LOCAL
+ } = require("./constants/address");
+
 const libraryInteraction = require("./library-contract-interaction");
 const Library = require("./build/Library.json");
 
 const run = async () => {
 	// local
-	// const provider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
-    // const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
-	// const contract = new ethers.Contract(LIBRARY_DEPLOYMENT_LOCAL, Library.abi, wallet);
+	const provider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
+    const wallet = new ethers.Wallet(PRIVATE_KEY_LOCAL, provider);
+	console.log(ethers.utils.formatEther(await wallet.getBalance(), 18));
+	const contract = new ethers.Contract(LIBRARY_DEPLOYMENT_LOCAL, Library.abi, wallet);
 	
 	// remote
-	const provider = new ethers.providers.InfuraProvider("ropsten", "40c2813049e44ec79cb4d7e0d18de173")
-	const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
-	const contract = new ethers.Contract(LIBRARY_DEPLOYMENT_ROPSTEN, Library.abi, wallet);
+	// const provider = new ethers.providers.InfuraProvider("ropsten", "40c2813049e44ec79cb4d7e0d18de173")
+	// const wallet = new ethers.Wallet(PRIVATE_KEY__ROPSTEN, provider);
+	// const contract = new ethers.Contract(LIBRARY_DEPLOYMENT_ROPSTEN, Library.abi, wallet);
 
 	// Create book
-	await libraryInteraction.createBook(contract, [1, "First book"]);
+	await libraryInteraction.createBook(contract, [1, "4 book"]);
 	const booksCount = await libraryInteraction.getBooksCount(contract);
 
 	// Get all books & available books
