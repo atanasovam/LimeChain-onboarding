@@ -1,6 +1,19 @@
+const { ethers } = require("ethers");
+const { LIBRARY_DEPLOYMENT_ROPSTEN, PRIVATE_KEY } = require("./constants/address");
 const libraryInteraction = require("./library-contract-interaction");
+const Library = require("./build/Library.json");
 
-const run = async (contract, wallet) => {
+const run = async () => {
+	// local
+	// const provider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
+    // const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
+	// const contract = new ethers.Contract(LIBRARY_DEPLOYMENT_LOCAL, Library.abi, wallet);
+	
+	// remote
+	const provider = new ethers.providers.InfuraProvider("ropsten", "40c2813049e44ec79cb4d7e0d18de173")
+	const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
+	const contract = new ethers.Contract(LIBRARY_DEPLOYMENT_ROPSTEN, Library.abi, wallet);
+
 	// Create book
 	await libraryInteraction.createBook(contract, [1, "First book"]);
 	const booksCount = await libraryInteraction.getBooksCount(contract);
@@ -47,5 +60,7 @@ const run = async (contract, wallet) => {
 	isBorrowedByUser = await libraryInteraction.isBookBorrowedByUser(contract, wallet, bookId);
 	console.log(`Is this book borrowed by ${wallet.address}: ${isBorrowedByUser}\n`);
 };
+
+run();
 
 module.exports = { run };

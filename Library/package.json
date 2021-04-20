@@ -4,6 +4,7 @@
   "description": "This is the default package.json generated for your project",
   "main": "index.js",
   "scripts": {
+    "start": "node interact.js",
     "eg": "etherlime ganache",
     "compile": "etherlime compile --solc-version=0.7.5 --runs=200",
     "deploy": "etherlime deploy --file=./deployment/deploy-remote.js --network=ropsten --secret=6bcef534ceb142659b6af673be541f05c64443c2cb9de1bcb72aa02db726b10d",
