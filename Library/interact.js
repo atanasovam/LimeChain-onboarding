@@ -8,17 +8,17 @@ const run = async () => {
 	dotenv.config();
 
 	// local
-	// const provider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
-	// const wallet = new ethers.Wallet(process.env.PRIVATE_KEY_LOCAL, provider);
-	// const contract = new ethers.Contract(process.env.LIBRARY_DEPLOYMENT_LOCAL, Library.abi, wallet);
+	const provider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
+	const wallet = new ethers.Wallet(process.env.PRIVATE_KEY_LOCAL, provider);
+	const contract = new ethers.Contract(process.env.LIBRARY_DEPLOYMENT_LOCAL, Library.abi, wallet);
 
 	// remote
-	const provider = new ethers.providers.InfuraProvider("ropsten", "40c2813049e44ec79cb4d7e0d18de173")
-	const wallet = new ethers.Wallet(process.env.PRIVATE_KEY__ROPSTEN, provider);
-	const contract = new ethers.Contract(process.env.LIBRARY_DEPLOYMENT_ROPSTEN, Library.abi, wallet);
+	// const provider = new ethers.providers.InfuraProvider("ropsten", "40c2813049e44ec79cb4d7e0d18de173");
+	// const wallet = new ethers.Wallet(process.env.PRIVATE_KEY__ROPSTEN, provider);
+	// const contract = new ethers.Contract(process.env.LIBRARY_DEPLOYMENT_ROPSTEN, Library.abi, wallet);
 
 	// Create book
-	await libraryInteraction.createBook(contract, [1, "13 book"]);
+	await libraryInteraction.createBook(contract, [91, "Second book"]);
 	const booksCount = await libraryInteraction.getBooksCount(contract);
 
 	// Get all books & available books
