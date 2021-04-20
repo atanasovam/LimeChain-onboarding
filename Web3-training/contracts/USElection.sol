@@ -62,6 +62,10 @@ contract USElection is Ownable {
         emit LogElectionEnded(currentLeader());
     }
 
+    function resumeElection() public {
+        electionEnded = false;
+    }
+
     modifier onlyActiveElection() {
         require(!electionEnded, "The election has ended already");
         _;
