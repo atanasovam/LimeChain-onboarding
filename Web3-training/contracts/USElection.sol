@@ -20,6 +20,7 @@ contract USElection is Ownable {
         uint8 stateSeats;
     }
 
+    event LogElectionResumed(uint256 currentWinner);
     event LogElectionEnded(uint256 winner);
     event LogStateResult(uint8 winner, uint8 stateSeats, string state);
 
@@ -64,6 +65,7 @@ contract USElection is Ownable {
 
     function resumeElection() public {
         electionEnded = false;
+        emit LogElectionResumed(currentLeader());
     }
 
     modifier onlyActiveElection() {
