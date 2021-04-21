@@ -23,8 +23,10 @@ contract USElection is Ownable {
     event LogElectionResumed(uint256 currentWinner);
     event LogElectionEnded(uint256 winner);
     event LogStateResult(uint8 winner, uint8 stateSeats, string state);
+    event LogReceivedData(StateResult data);
 
     function submitStateResult(StateResult memory result) public onlyOwner onlyActiveElection {
+        emit LogReceivedData(result);
         require(result.stateSeats > 0, "States must have at least 1 seat");
         require(
             result.votesBiden != result.votesTrump,
@@ -66,6 +68,10 @@ contract USElection is Ownable {
     function resumeElection() public {
         electionEnded = false;
         emit LogElectionResumed(currentLeader());
+    }
+
+    function resetElection() public {
+        electionEnded = false;
     }
 
     modifier onlyActiveElection() {
