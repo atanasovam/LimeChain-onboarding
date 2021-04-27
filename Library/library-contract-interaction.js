@@ -60,7 +60,7 @@ const libraryInteraction = (() => {
 		return allBooks;
 	};
 
-	const isBookAvailable = async (contract, bookId) => {
+	const isBookAvailable  = async (contract, bookId) => {
 		const { availableCopiesCount } = await contract.books(bookId);
 		return parseInt(availableCopiesCount) > 0;
 	};

@@ -2,8 +2,16 @@
 pragma solidity 0.7.5;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
+import "./LIBWrapper.sol";
 
 contract Library is Ownable {
+    IERC20 public LIBToken; 
+    LIBWrapper public wrapperContract;
+
+    uint borrowPrice = 1;
+
     struct Book {
         string name;
         uint availableCopiesCount;
@@ -16,8 +24,15 @@ contract Library is Ownable {
     mapping (address => mapping (bytes32 => bool)) public borrowedBooks;
     
     event LogAddedBook(bytes32 id);
+    event LIBBalance(uint currentBalance);
+    event LIBBuy(address sender, uint amount);
     event BookBorrowed(bytes32 id, address client);
     event BookReturned(bytes32 id, address client);
+
+    constructor(address libTokenAddress, address payable libWrapperAddress) public payable {
+	   LIBToken = IERC20(libTokenAddress);
+       wrapperContract = LIBWrapper(libWrapperAddress);
+    }
 
     modifier bookExists(string memory _name) {
         bytes32 id = callKeccak256(_name);
@@ -28,6 +43,22 @@ contract Library is Ownable {
     modifier isAvailable(bytes32 _id) {
         require(books[_id].availableCopiesCount > 0, "This book isn't available!");
         _;
+    }
+
+    function wrapToken() public {
+        wrapperContract.wrap();
+    }
+
+    function buyLIB(uint eth) public {
+       wrapperContract.buyLIB(eth);
+       emit LIBBuy(msg.sender, eth);
+    }
+
+    function unwrapToken() public onlyOwner {
+        address wrapperAddress = 0x90f5b5EB9fd37306A78d5ef28123ef5dd9136E96;
+
+        LIBToken.approve(wrapperAddress, borrowPrice);
+        wrapperContract.unwrap(borrowPrice);
     }
 
     function createBook(uint _availableCopies, string memory _name) public onlyOwner bookExists(_name) {
@@ -49,8 +80,11 @@ contract Library is Ownable {
         return books[_id].clientAddresses;
     }
 
-    function borrowBook(bytes32 _id) public isAvailable(_id) {
+    function borrowBook(bytes32 _id) public payable isAvailable(_id) {
+        require(LIBToken.allowance(msg.sender, address(this)) >= borrowPrice, "Token allowance too low!");
         require(!borrowedBooks[msg.sender][_id], "Already borrowed!");
+
+        LIBToken.transferFrom(msg.sender, address(this), borrowPrice);
 
         books[_id].availableCopiesCount--;
         
@@ -67,6 +101,11 @@ contract Library is Ownable {
         books[_id].availableCopiesCount++;
         
         emit BookReturned(_id, msg.sender);
+    }
+
+    function getCurrentBalance() public {
+        uint senderBalance = LIBToken.balanceOf(msg.sender);
+        emit LIBBalance(senderBalance);
     }
     
     function viewAllBooksCount() public view returns(uint) {
