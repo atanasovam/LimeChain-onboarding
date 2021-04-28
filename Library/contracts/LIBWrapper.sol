@@ -10,8 +10,8 @@ contract LIBWrapper {
     event LogLIBWrapped(address sender, uint256 amount);
     event LogLIBUnwrapped(address sender, uint256 amount);
 
-	constructor(address libTokenAddress) public {
-	    LIBToken = LIB(libTokenAddress);
+	constructor() public {
+	    LIBToken = new LIB();
     }
 	
 	function wrap() public payable {
