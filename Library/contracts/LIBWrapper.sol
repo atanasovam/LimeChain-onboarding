@@ -8,7 +8,7 @@ contract LIBWrapper {
 
 	LIB public LIBToken;
     
-    event LogLIBBuy(address sender, uint256 amount);
+    event LogApprovedTx(address sender, uint256 amount);
     event LogLIBWrapped(address sender, uint256 amount);
     event LogLIBUnwrapped(address sender, uint256 amount);
 
@@ -16,19 +16,16 @@ contract LIBWrapper {
 	    LIBToken = LIB(libTokenAddress);
     }
 
-    function buyLIB(uint eth) public {
-		require(eth > 0, "We need to wrap at least 1");
-
-		LIBToken.transferFrom(msg.sender, address(this), eth);
-		LIBToken.mint(msg.sender, eth);
-
-		emit LogLIBBuy(msg.sender, eth);
+	function approve() public payable {
+		LIBToken.approve(msg.sender, msg.value);
+		emit LogApprovedTx(msg.sender, msg.value);
 	}
 
 	function wrap() public payable {
 		require(msg.value > 0, "We need to wrap at least 1");
 
 		LIBToken.mint(msg.sender, msg.value);
+		// LIBToken.balanceOf(msg.sender);
 		emit LogLIBWrapped(msg.sender, msg.value);
 	}
 

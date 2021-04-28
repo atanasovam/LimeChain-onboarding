@@ -10,7 +10,7 @@ contract Library is Ownable {
     IERC20 public LIBToken; 
     LIBWrapper public wrapperContract;
 
-    uint borrowPrice = 1;
+    uint borrowPrice = 1000000000000000;
 
     struct Book {
         string name;
@@ -49,13 +49,8 @@ contract Library is Ownable {
         wrapperContract.wrap();
     }
 
-    function buyLIB(uint eth) public {
-       wrapperContract.buyLIB(eth);
-       emit LIBBuy(msg.sender, eth);
-    }
-
     function unwrapToken() public onlyOwner {
-        address wrapperAddress = 0x90f5b5EB9fd37306A78d5ef28123ef5dd9136E96;
+        address wrapperAddress = 0xD9995BAE12FEe327256FFec1e3184d492bD94C31;
 
         LIBToken.approve(wrapperAddress, borrowPrice);
         wrapperContract.unwrap(borrowPrice);
@@ -82,6 +77,7 @@ contract Library is Ownable {
 
     function borrowBook(bytes32 _id) public payable isAvailable(_id) {
         require(LIBToken.allowance(msg.sender, address(this)) >= borrowPrice, "Token allowance too low!");
+        require(LIBToken.balanceOf(msg.sender) > 0, "User balance too low!");
         require(!borrowedBooks[msg.sender][_id], "Already borrowed!");
 
         LIBToken.transferFrom(msg.sender, address(this), borrowPrice);
