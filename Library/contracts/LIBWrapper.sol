@@ -5,27 +5,19 @@ pragma abicoder v2;
 import "./LIB.sol";
 
 contract LIBWrapper {
-
 	LIB public LIBToken;
     
-    event LogApprovedTx(address sender, uint256 amount);
     event LogLIBWrapped(address sender, uint256 amount);
     event LogLIBUnwrapped(address sender, uint256 amount);
 
 	constructor(address libTokenAddress) public {
 	    LIBToken = LIB(libTokenAddress);
     }
-
-	function approve() public payable {
-		LIBToken.approve(msg.sender, msg.value);
-		emit LogApprovedTx(msg.sender, msg.value);
-	}
-
+	
 	function wrap() public payable {
 		require(msg.value > 0, "We need to wrap at least 1");
 
 		LIBToken.mint(msg.sender, msg.value);
-		// LIBToken.balanceOf(msg.sender);
 		emit LogLIBWrapped(msg.sender, msg.value);
 	}
 

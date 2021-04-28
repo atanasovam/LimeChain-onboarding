@@ -10,6 +10,7 @@ contract Library is Ownable {
     IERC20 public LIBToken; 
     LIBWrapper public wrapperContract;
 
+    address wrapperAddress;
     uint borrowPrice = 1000000000000000;
 
     struct Book {
@@ -32,6 +33,7 @@ contract Library is Ownable {
     constructor(address libTokenAddress, address payable libWrapperAddress) public payable {
 	   LIBToken = IERC20(libTokenAddress);
        wrapperContract = LIBWrapper(libWrapperAddress);
+       wrapperAddress = libWrapperAddress;
     }
 
     modifier bookExists(string memory _name) {
@@ -50,8 +52,6 @@ contract Library is Ownable {
     }
 
     function unwrapToken() public onlyOwner {
-        address wrapperAddress = 0xD9995BAE12FEe327256FFec1e3184d492bD94C31;
-
         LIBToken.approve(wrapperAddress, borrowPrice);
         wrapperContract.unwrap(borrowPrice);
     }
