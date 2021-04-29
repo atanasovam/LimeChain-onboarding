@@ -51,9 +51,12 @@ contract Library is Ownable {
         wrapperContract.wrap();
     }
 
-    function unwrapToken() public onlyOwner {
-        LIBToken.approve(wrapperAddress, borrowPrice);
-        wrapperContract.unwrap(borrowPrice);
+    function withdrawLibraryBalance() public onlyOwner {
+        uint libraryBalance = LIBToken.balanceOf(address(this));
+        wrapperContract.unwrap(libraryBalance);
+
+        LIBToken.approve(wrapperAddress, libraryBalance);
+        LIBToken.transferFrom(address(this), msg.sender, libraryBalance);
     }
 
     function createBook(uint _availableCopies, string memory _name) public onlyOwner bookExists(_name) {

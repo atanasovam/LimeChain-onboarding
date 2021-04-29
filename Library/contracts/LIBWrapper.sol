@@ -13,7 +13,7 @@ contract LIBWrapper {
 	constructor() public {
 	    LIBToken = new LIB();
     }
-	
+
 	function wrap() public payable {
 		require(msg.value > 0, "We need to wrap at least 1");
 
