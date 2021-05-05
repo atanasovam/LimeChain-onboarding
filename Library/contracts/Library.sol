@@ -11,7 +11,7 @@ contract Library is Ownable {
     LIBWrapper public wrapperContract;
 
     address wrapperAddress;
-    uint borrowPrice = 1000000000000000;
+    uint borrowPrice = 1000000000000;
 
     struct Book {
         string name;
@@ -52,10 +52,10 @@ contract Library is Ownable {
     }
 
     function withdrawLibraryBalance() public onlyOwner {
-        uint libraryBalance = LIBToken.balanceOf(address(this));
-        wrapperContract.unwrap(libraryBalance);
-
+        uint256 libraryBalance = LIBToken.balanceOf(address(this));
         LIBToken.approve(wrapperAddress, libraryBalance);
+
+        wrapperContract.unwrap(libraryBalance);
         LIBToken.transferFrom(address(this), msg.sender, libraryBalance);
     }
 

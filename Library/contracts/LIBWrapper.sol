@@ -9,6 +9,7 @@ contract LIBWrapper {
     
     event LogLIBWrapped(address sender, uint256 amount);
     event LogLIBUnwrapped(address sender, uint256 amount);
+    event LogContractBalance(address sender, uint256 amount);
 
 	constructor() public {
 	    LIBToken = new LIB();
@@ -21,7 +22,8 @@ contract LIBWrapper {
 		emit LogLIBWrapped(msg.sender, msg.value);
 	}
 
-    function unwrap(uint value) public {
+    function unwrap(uint256 value) public {
+		emit LogContractBalance(msg.sender, value);
 		require(value > 0, "We need to unwrap at least 1");
 
 		LIBToken.transferFrom(msg.sender, address(this), value);

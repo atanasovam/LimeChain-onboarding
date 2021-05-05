@@ -10,13 +10,17 @@ const run = async () => {
 
 	const provider = new ethers.providers.InfuraProvider("ropsten", "40c2813049e44ec79cb4d7e0d18de173");
 	const wallet = new ethers.Wallet(process.env.PRIVATE_KEY__ROPSTEN, provider);
-	const contract = new ethers.Contract("0x7422f08664DD029151CC8EAB2E730241EB69D7Fd", LIBWrapper.abi, wallet);
+	const contract = new ethers.Contract("0x6dCF49361cC1415C7072A0440a7fc0f562f59540", LIBWrapper.abi, wallet);
 	const address = await contract.LIBToken();
 	console.log(address);
+
 	// local
-	// const provider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
-	// const wallet = new ethers.Wallet(process.env.PRIVATE_KEY_LOCAL, provider);
-	// const contract = new ethers.Contract(process.env.LIBRARY_DEPLOYMENT_LOCAL, Library.abi, wallet);
+	//const provider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
+	// const wallet = new ethers.Wallet(process.env.PRIVATE_KEY__ROPSTEN, provider);
+	// const contract = new ethers.Contract("0xb314d2b0ACFD442E088cD7A6bd68810611B54956", Librar.abi, wallet);
+
+	// const balance = await contract.getCurrentBalance()
+	// console.log(balance);
 
 	// remote
 	// const provider = new ethers.providers.InfuraProvider("ropsten", "40c2813049e44ec79cb4d7e0d18de173");
