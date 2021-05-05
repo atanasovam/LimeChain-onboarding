@@ -10,7 +10,7 @@ contract Library is Ownable {
     IERC20 public LIBToken; 
     LIBWrapper public wrapperContract;
 
-    address wrapperAddress;
+    address payable wrapperAddress;
     uint borrowPrice = 1000000000000;
 
     struct Book {
