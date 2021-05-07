@@ -25,7 +25,6 @@ contract Library is Ownable {
     mapping (address => mapping (bytes32 => bool)) public borrowedBooks;
     
     event LogAddedBook(bytes32 id);
-    event LIBBalance(uint currentBalance);
     event LIBBuy(address sender, uint amount);
     event BookBorrowed(bytes32 id, address client);
     event BookReturned(bytes32 id, address client);
@@ -56,7 +55,6 @@ contract Library is Ownable {
         LIBToken.approve(wrapperAddress, libraryBalance);
 
         wrapperContract.unwrap(libraryBalance);
-        LIBToken.transferFrom(address(this), msg.sender, libraryBalance);
     }
 
     function createBook(uint _availableCopies, string memory _name) public onlyOwner bookExists(_name) {
@@ -102,9 +100,8 @@ contract Library is Ownable {
         emit BookReturned(_id, msg.sender);
     }
 
-    function getCurrentBalance() public {
-        uint senderBalance = LIBToken.balanceOf(msg.sender);
-        emit LIBBalance(senderBalance);
+    function getAmount() public view returns (uint _amount) {
+        return address(this).balance;
     }
     
     function viewAllBooksCount() public view returns(uint) {

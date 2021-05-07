@@ -10,7 +10,7 @@ const run = async () => {
 
 	const provider = new ethers.providers.InfuraProvider("ropsten", "40c2813049e44ec79cb4d7e0d18de173");
 	const wallet = new ethers.Wallet(process.env.PRIVATE_KEY__ROPSTEN, provider);
-	const contract = new ethers.Contract("0x601A30e7b7159ab2b9fAF5917fDfb8aee5ee154A", LIBWrapper.abi, wallet);
+	const contract = new ethers.Contract("0xa254E4C169D60Aa31B4E5FD55D198b6FCd869578", LIBWrapper.abi, wallet);
 	const address = await contract.LIBToken();
 	console.log(address);
 
