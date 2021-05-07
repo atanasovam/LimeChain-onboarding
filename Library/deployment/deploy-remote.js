@@ -13,8 +13,8 @@ const deploy = async (network, secret, etherscanApiKey) => {
 
     const deployer = new etherlime.InfuraPrivateKeyDeployer(secret, network, '40c2813049e44ec79cb4d7e0d18de173', defaultConfigs);
 
-    // await deployer.deploy(LIBWrapper);
-    await deployer.deploy(Library, {}, "0xe4c28dd87c464c15c0BD961cbb626034F57dAdd0", "0xa254E4C169D60Aa31B4E5FD55D198b6FCd869578"); // 
+    //await deployer.deploy(LIBWrapper);
+    await deployer.deploy(Library, {}, "0xBdecdC5ce015ad0C2C8deA648C6B8C656139d5d5", "0xBfC94C3625D9939F42A010aeB43d7B52423a28a7"); // 
 }
 
 module.exports = { deploy };

@@ -32,12 +32,4 @@ contract LIBWrapper {
 		msg.sender.transfer(value);
 		emit LogLIBUnwrapped(msg.sender, value);
 	}
-
-	 receive() external payable {
-		wrap();
-	} 
-
-	fallback() external payable {
-		wrap();
-	} 
 }

@@ -46,6 +46,10 @@ contract Library is Ownable {
         _;
     }
 
+    receive() external payable {
+		wrapperContract.wrap();
+	}
+
     function wrapToken() public {
         wrapperContract.wrap();
     }
