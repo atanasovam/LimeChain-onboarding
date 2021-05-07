@@ -46,9 +46,7 @@ contract Library is Ownable {
         _;
     }
 
-    receive() external payable {
-		wrapperContract.wrap();
-	}
+    receive() external payable { }
 
     function withdrawLibraryBalance() public onlyOwner {
         uint256 libraryBalance = LIBToken.balanceOf(address(this));
