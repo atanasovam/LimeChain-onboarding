@@ -50,10 +50,6 @@ contract Library is Ownable {
 		wrapperContract.wrap();
 	}
 
-    function wrapToken() public {
-        wrapperContract.wrap();
-    }
-
     function withdrawLibraryBalance() public onlyOwner {
         uint256 libraryBalance = LIBToken.balanceOf(address(this));
         LIBToken.approve(wrapperAddress, libraryBalance);
